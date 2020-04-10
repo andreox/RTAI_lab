@@ -18,13 +18,14 @@
 static RT_TASK thread[NTASKS] ;
 
 static int bits[3] ;
-static bool state[3] ;
+static bool state[4] ;
 static int val_states[] = { 0 , 3 , 6 , 5 } ;
 
 struct rec_struct {
 
 	int OK ;
 	int count ;
+
 };
 
 static struct rec_struct *rec ;
@@ -41,26 +42,42 @@ static void set_bit( int index ) {
 
 }
 
+static void reset_states() {
+
+	int k ;
+	for ( k = 0 ; k < 4 ; k++ ) state[k] = false ;
+
+}
+
 static void recognize() {
 
 	int num = 2*2*bits[2] + 2*bits[1] + bits[0] ;
 
-	int j,k ;
-	for ( j = 0 ; j < 3 && state[j] ; j++ ) ;
+	int j ;
+	for ( j = 0 ; j < 4 && state[j] ; j++ ) ;
 
-	if ( j == 3 ) {
+	if ( j == 4 ) {
 		rec->OK = 1 ;
 		rec->count++ ;
 		rt_printk(" REC->OK : 1, REC->COUNT : %d\n\n",rec->count) ;
 
-		for ( k = 0 ; k < 3 ; k++ ) state[k] = false ;
+		reset_states() ;
 	}
 
-	else if ( !state[j] && num == val_states[j] ) state[j] = true ;
+	else if ( !state[j] && num == val_states[j] ) {
+
+		state[j] = true ;
+		if ( j == 3 ) {
+
+			rec->OK = 1 ;
+			rec->count++ ;
+			rt_printk("REC->OK : 1, REC->COUNT : %d\n\n",rec->count) ;
+			reset_states() ;
+		}
 
 	else { //ho riconosciuto 0,3 e poi un numero diverso, devo risettare gli stati
 
-		for ( k = 0 ; k < 3 ; k++ ) state[k] = false ;
+		reset_states() ;
 	}
 	
 	return;
@@ -93,7 +110,7 @@ int init_module(void) {
 		rt_make_periodic( &thread[i], rt_get_time()+(periodo*(i+1)) , periodo*(i+1)) ;
 	}
 
-	rt_make_periodic( &thread[3], rt_get_time()+(periodo*6), periodo) ;
+	rt_make_periodic( &thread[3], rt_get_time()+(periodo*5), periodo) ;
 
 	rt_spv_RMS(0) ;
 
