@@ -57,19 +57,11 @@ static void recognize(void) {
 	while(1) {
 		num = 4*bits[2] + 2*bits[1] + bits[0] ;
 
-		rt_printk("Numero letto : %d\n N.Seq ric : %d\n",num,rec->count);
+		//rt_printk("Numero letto : %d\n N.Seq ric : %d\n",num,rec->count);
 		
 		for ( j = 0 ; j < 4 && state[j] ; j++ ) {}
 
-		if ( j == 4 ) {
-			rec->OK = 1 ;
-			rec->count = rec->count + 1 ;
-			rt_printk(" REC->OK : 1, REC->COUNT : %d\n\n",rec->count) ;
-
-			reset_states() ;
-		}
-
-		else if ( !state[j] && num == val_states[j] ) {
+		if ( !state[j] && num == val_states[j] ) {
 
 			state[j] = true ;
 			if ( j == 3 ) {
