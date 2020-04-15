@@ -42,12 +42,11 @@ int main (void)
 
     data = rtai_malloc (SHMNAM,1);
 
-	int i = 0 ;
-    while (i < 100) {
+	
+    while (1) {
 
         printf(" OK : %d Count : %d \n", data->OK, data->count);
-	//sleep(1);
-	i++ ;
+	
     }
 
     rtai_free (SHMNAM, &data);
