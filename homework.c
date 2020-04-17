@@ -71,15 +71,7 @@ static void recognize(void) {
 		
 		for ( j = 0 ; j < 4 && state[j] ; j++ ) {}
 
-		if ( j == 4 ) {
-			rec->OK = 1 ;
-			rec->count = rec->count + 1 ;
-			rt_printk(" REC->OK : 1, REC->COUNT : %d\n\n",rec->count) ;
-
-			reset_states() ;
-		}
-
-		else if ( !state[j] && num == val_states[j] ) {
+		if ( !state[j] && num == val_states[j] ) {
 
 			state[j] = true ;
 			if ( j == 3 ) {
